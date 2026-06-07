@@ -124,6 +124,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--amarillo)}
   <div class="tabs" id="tabs" style="display:none">
     <div class="tab on" data-v="stock" onclick="setView('stock')">📦 Stock</div>
     <div class="tab" data-v="envios" onclick="setView('envios')">🚚 Envíos</div>
+    <div class="tab" data-v="gastos" onclick="setView('gastos')">💸 Gastos</div>
   </div>
 
   <div id="viewStock">
@@ -133,6 +134,16 @@ input:focus,textarea:focus{outline:none;border-color:var(--amarillo)}
       <div class="kpi"><div class="n" id="kRev">–</div><div class="l">Ingresos £</div></div>
     </div>
     <div id="stockContent"><div class="muted">Conecta tu Sheet para empezar…</div></div>
+  </div>
+
+  <div id="viewGastos" class="hide">
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="kIngresos" style="color:var(--ok)">–</div><div class="l">Ingresos £</div></div>
+      <div class="kpi"><div class="n" id="kGastos" style="color:var(--low)">–</div><div class="l">Gastos £</div></div>
+      <div class="kpi"><div class="n" id="kNeto" style="color:var(--amarillo)">–</div><div class="l">Neto £</div></div>
+    </div>
+    <div class="sec">Gastos registrados</div>
+    <div id="gastosContent"><div class="muted">Sin gastos aún.</div></div>
   </div>
 
   <div id="viewEnvios" class="hide">
@@ -151,7 +162,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--amarillo)}
   </div>
 </div>
 
-<button class="fab" id="fab" onclick="openSheet()" style="display:none">+ Venta</button>
+<button class="fab" id="fab" onclick="fabClick()" style="display:none">+ Venta</button>
 
 <div class="sheet" id="sheet">
   <div class="modal">
@@ -176,12 +187,34 @@ input:focus,textarea:focus{outline:none;border-color:var(--amarillo)}
   </div>
 </div>
 
+<!-- Modal Gastos -->
+<div class="sheet" id="sheetGasto">
+  <div class="modal">
+    <h2>Registrar Gasto<small>Se guarda localmente en el móvil</small></h2>
+    <div class="fld"><label>Descripción</label><input id="gastoDesc" placeholder="Ej: Envío Royal Mail, Bolsas…"></div>
+    <div class="fld"><label>Monto £</label><input id="gastoMonto" type="number" min="0" inputmode="decimal" placeholder="0.00"></div>
+    <div class="fld"><label>Categoría</label>
+      <div class="pills" id="gastoCatPills">
+        <div class="pill on" data-gc="Envío">📦 Envío</div>
+        <div class="pill" data-gc="Compra">🛍 Compra</div>
+        <div class="pill" data-gc="Otro">✏️ Otro</div>
+      </div>
+    </div>
+    <div class="btns" style="margin-top:20px">
+      <button class="btn x" onclick="closeGasto()">Cancelar</button>
+      <button class="btn go" onclick="submitGasto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const SIZES={Hombre:['M','L','XL','XXL'],Mujer:['S','M','L','XL']};
 let URL=localStorage.getItem('camUrl')||'';
 let stock=[],envios=[],sel={cat:'Hombre',size:'M'},view='stock',filter='todos';
+let gastos=JSON.parse(localStorage.getItem('camGastos')||'[]');
+let selGastoCat='Envío';
 
 function toast(m,err){const t=document.getElementById('toast');t.textContent=m;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast',2200);}
 function saveUrl(){const v=document.getElementById('urlIn').value.trim();if(!v.includes('script.google'))return toast('URL inválida',1);URL=v;localStorage.setItem('camUrl',v);document.getElementById('setup').style.display='none';load();}
@@ -204,12 +237,70 @@ function setView(v){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
   document.getElementById('viewStock').classList.toggle('hide',v!=='stock');
   document.getElementById('viewEnvios').classList.toggle('hide',v!=='envios');
+  document.getElementById('viewGastos').classList.toggle('hide',v!=='gastos');
+  const fab=document.getElementById('fab');
+  fab.textContent=v==='gastos'?'+ Gasto':'+ Venta';
+  if(v==='gastos')renderGastos();
 }
+
+function fabClick(){view==='gastos'?openGasto():openSheet();}
+
+function renderGastos(){
+  const totalG=gastos.reduce((s,g)=>s+(+g.monto||0),0);
+  const totalI=totalIngresos();
+  document.getElementById('kIngresos').textContent='£'+totalI.toLocaleString('en-GB');
+  document.getElementById('kGastos').textContent='£'+totalG.toLocaleString('en-GB');
+  const neto=totalI-totalG;
+  const netoEl=document.getElementById('kNeto');
+  netoEl.textContent='£'+neto.toLocaleString('en-GB');
+  netoEl.style.color=neto>=0?'var(--ok)':'var(--low)';
+  if(!gastos.length){document.getElementById('gastosContent').innerHTML='<div class="muted">Sin gastos aún.</div>';return;}
+  let html='';
+  for(const g of [...gastos].reverse()){
+    html+=`<div class="ship Pendiente" style="--c:var(--low)">
+      <div class="top">
+        <div><div class="cli">${g.desc}</div>
+        <div class="meta">${g.cat} · ${g.fecha}</div></div>
+        <div class="badge Pendiente" style="background:rgba(255,90,90,.18);color:var(--low)">£${(+g.monto).toLocaleString('en-GB')}</div>
+      </div>
+      <div class="actions"><button class="sbtn" onclick="borrarGasto(${g.id})">🗑 Borrar</button></div>
+    </div>`;
+  }
+  document.getElementById('gastosContent').innerHTML=html;
+}
+
+function openGasto(){document.getElementById('sheetGasto').classList.add('show');}
+function closeGasto(){document.getElementById('sheetGasto').classList.remove('show');}
+
+function submitGasto(){
+  const desc=document.getElementById('gastoDesc').value.trim();
+  const monto=+document.getElementById('gastoMonto').value;
+  if(!desc)return toast('¿Descripción?',1);
+  if(!monto||monto<=0)return toast('¿Monto?',1);
+  const hoy=new Date();
+  const fecha=hoy.toLocaleDateString('es-GB',{day:'2-digit',month:'2-digit',year:'numeric'});
+  gastos.push({id:Date.now(),desc,monto,cat:selGastoCat,fecha});
+  localStorage.setItem('camGastos',JSON.stringify(gastos));
+  toast('✓ Gasto registrado');
+  closeGasto();
+  document.getElementById('gastoDesc').value='';
+  document.getElementById('gastoMonto').value='';
+  renderGastos();
+}
+
+function borrarGasto(id){
+  gastos=gastos.filter(g=>g.id!==id);
+  localStorage.setItem('camGastos',JSON.stringify(gastos));
+  renderGastos();
+  toast('Gasto eliminado');
+}
+
+function totalIngresos(){return envios.reduce((s,e)=>s+(+e.total||0),0);}
 
 function renderStock(){
   const left=stock.reduce((s,x)=>s+(+x.left||0),0);
   const sold=stock.reduce((s,x)=>s+(+x.sold||0),0);
-  const rev=stock.reduce((s,x)=>s+((+x.sold||0)*(+x.price||0)),0);
+  const rev=totalIngresos();
   document.getElementById('kLeft').textContent=left;
   document.getElementById('kSold').textContent=sold;
   document.getElementById('kRev').textContent='£'+rev.toLocaleString('en-GB');
@@ -300,6 +391,12 @@ async function submitSale(){
   }catch(e){toast('Error al guardar',1);}
   btn.disabled=false;btn.textContent='Guardar';
 }
+
+document.querySelectorAll('#gastoCatPills .pill').forEach(p=>p.onclick=()=>{
+  selGastoCat=p.dataset.gc;
+  document.querySelectorAll('#gastoCatPills .pill').forEach(x=>x.classList.remove('on'));
+  p.classList.add('on');
+});
 
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 load();
