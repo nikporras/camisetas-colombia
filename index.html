@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#003893">
+<title>Camisetas Colombia</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#003893; --rojo:#CE1126; --amarillo:#FCD116;
+  --bg:#0b1224; --panel:#13203b; --panel2:#1a2c4f;
+  --ink:#f4f6fb; --muted:#8da3c9; --line:rgba(252,209,22,.18);
+  --ok:#3ecf8e; --low:#ff5a5a; --warn:#ffb74d; --info:#5aa9ff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:150px;
+  background-image:radial-gradient(circle at 15% -5%,rgba(0,56,147,.5),transparent 50%),radial-gradient(circle at 90% 0%,rgba(206,17,38,.18),transparent 45%);}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+header{padding:24px 16px 12px;position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 72%,transparent);display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:'Anton';font-size:24px;letter-spacing:1px;line-height:.95;text-transform:uppercase}
+.brand .co{color:var(--amarillo)}
+.brand span{display:block;font-family:'Outfit';font-size:9px;letter-spacing:3px;color:var(--muted);font-weight:600;margin-top:2px}
+.flag{height:5px;border-radius:4px;display:flex;overflow:hidden;width:46px;margin-top:6px}
+.flag i{flex:1}.flag i:nth-child(1){background:var(--amarillo);flex:2}.flag i:nth-child(2){background:var(--azul)}.flag i:nth-child(3){background:var(--rojo)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--low);box-shadow:0 0 8px var(--low)}
+.dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.tabs{display:flex;gap:8px;margin:6px 0 16px;background:var(--panel);padding:5px;border-radius:14px;border:1px solid var(--line)}
+.tab{flex:1;text-align:center;padding:11px;border-radius:10px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;transition:.15s}
+.tab.on{background:var(--amarillo);color:#1a1200}
+.kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:0 0 18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center}
+.kpi .n{font-family:'Anton';font-size:28px;color:var(--amarillo);line-height:1}
+.kpi .l{font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-top:5px;font-weight:600}
+.sec{font-family:'Anton';font-size:17px;letter-spacing:1px;margin:18px 4px 10px;color:var(--ink);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:2px;background:var(--line)}
+.tag{font-family:'Outfit';font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700}
+.tag.h{background:rgba(0,56,147,.4);color:#7eaaff;border:1px solid rgba(126,170,255,.3)}
+.tag.m{background:rgba(206,17,38,.3);color:#ff8a9b;border:1px solid rgba(255,138,155,.3)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.card.h::before{background:var(--azul)}.card.m::before{background:var(--rojo)}
+.card .sz{font-family:'Anton';font-size:24px;letter-spacing:1px}
+.card .bar{height:6px;border-radius:6px;background:rgba(255,255,255,.08);margin:9px 0 7px;overflow:hidden}
+.card .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--amarillo),#ffe066);border-radius:6px;transition:width .5s}
+.card .stat{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.card .stat b{color:var(--ink)}
+.card.alert{border-color:var(--low)}
+.card.alert .sz::after{content:' ⚠️';font-size:13px}
+.ship{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden}
+.ship::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.ship.Pendiente::before{background:var(--warn)}
+.ship.Enviada::before{background:var(--info)}
+.ship.Entregada::before{background:var(--ok)}
+.ship .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ship .cli{font-weight:700;font-size:15px}
+.ship .meta{font-size:12px;color:var(--muted);margin-top:2px}
+.ship .dir{font-size:13px;color:var(--ink);margin:8px 0;line-height:1.4}
+.ship .badge{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
+.badge.Pendiente{background:rgba(255,183,77,.18);color:var(--warn)}
+.badge.Enviada{background:rgba(90,169,255,.18);color:var(--info)}
+.badge.Entregada{background:rgba(62,207,142,.18);color:var(--ok)}
+.ship .actions{display:flex;gap:8px;margin-top:6px}
+.sbtn{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-weight:600;font-size:12px;cursor:pointer}
+.sbtn.act{background:var(--amarillo);color:#1a1200;border-color:var(--amarillo)}
+.sbtn:disabled{opacity:.5}
+.filter{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.fbtn{padding:8px 16px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+.fbtn.on{background:var(--amarillo);color:#1a1200;border-color:var(--amarillo)}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:30;background:linear-gradient(135deg,var(--amarillo),#e6bd0c);color:#1a1200;border:none;font-family:'Anton';font-size:19px;letter-spacing:1px;text-transform:uppercase;padding:16px 42px;border-radius:40px;box-shadow:0 8px 30px rgba(252,209,22,.4);display:flex;align-items:center;gap:8px;cursor:pointer}
+.fab:active{transform:translateX(-50%) scale(.96)}
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:flex-end}
+.sheet.show{display:flex}
+.modal{background:var(--panel2);width:100%;max-width:520px;margin:0 auto;border-radius:26px 26px 0 0;padding:24px 20px 34px;border-top:2px solid var(--amarillo);animation:up .3s ease;max-height:92vh;overflow-y:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal h2{font-family:'Anton';font-size:24px;letter-spacing:1px;text-transform:uppercase}
+.modal h2 small{display:block;font-family:'Outfit';font-size:11px;color:var(--muted);letter-spacing:.5px;font-weight:500;margin-top:3px;text-transform:none}
+.fld{margin-bottom:14px;margin-top:16px}
+.fld label{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;font-weight:600;display:block;margin-bottom:8px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{flex:1;min-width:58px;text-align:center;padding:12px 6px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-weight:600;font-size:15px;cursor:pointer;transition:.15s}
+.pill.on{background:var(--amarillo);color:#1a1200;border-color:var(--amarillo)}
+input,textarea{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;color:var(--ink);font-family:'Outfit';font-size:16px;font-weight:600;resize:none}
+input:focus,textarea:focus{outline:none;border-color:var(--amarillo)}
+.row2{display:flex;gap:10px}.row2 .fld{flex:1}
+.tot{text-align:center;font-family:'Anton';font-size:24px;color:var(--amarillo);margin:14px 0 16px}
+.btns{display:flex;gap:10px}
+.btn{flex:1;padding:15px;border-radius:14px;border:none;font-family:'Anton';font-size:17px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.btn.x{background:var(--panel);color:var(--muted)}
+.btn.go{background:linear-gradient(135deg,var(--amarillo),#e6bd0c);color:#1a1200}
+.btn:disabled{opacity:.5}
+.setup{background:var(--panel);border:1px dashed var(--amarillo);border-radius:16px;padding:18px;margin:10px 0 18px}
+.setup p{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.setup input{margin-bottom:10px}
+.toast{position:fixed;bottom:104px;left:50%;transform:translateX(-50%);background:var(--ok);color:#04130c;padding:12px 22px;border-radius:30px;font-weight:700;z-index:50;opacity:0;transition:.3s;pointer-events:none}
+.toast.show{opacity:1}.toast.err{background:var(--low);color:#fff}
+.muted{text-align:center;color:var(--muted);font-size:13px;padding:34px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="brand">CAMISETAS <span class="co" style="display:inline">COLOMBIA</span><span>STOCK · VENTAS · ENVÍOS</span></div>
+    <div class="flag"><i></i><i></i><i></i></div>
+  </div>
+  <div class="dot" id="dot"></div>
+</header>
+
+<div class="wrap">
+  <div id="setup" class="setup" style="display:none">
+    <p>🔗 Pega la <b>URL del Web App</b> de Google Apps Script (termina en <b>/exec</b>):</p>
+    <input id="urlIn" placeholder="https://script.google.com/macros/s/.../exec" inputmode="url">
+    <button class="btn go" style="width:100%" onclick="saveUrl()">Conectar</button>
+  </div>
+
+  <div class="tabs" id="tabs" style="display:none">
+    <div class="tab on" data-v="stock" onclick="setView('stock')">📦 Stock</div>
+    <div class="tab" data-v="envios" onclick="setView('envios')">🚚 Envíos</div>
+  </div>
+
+  <div id="viewStock">
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="kLeft">–</div><div class="l">En Stock</div></div>
+      <div class="kpi"><div class="n" id="kSold">–</div><div class="l">Vendidas</div></div>
+      <div class="kpi"><div class="n" id="kRev">–</div><div class="l">Ingresos £</div></div>
+    </div>
+    <div id="stockContent"><div class="muted">Conecta tu Sheet para empezar…</div></div>
+  </div>
+
+  <div id="viewEnvios" class="hide">
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="kPend" style="color:var(--warn)">–</div><div class="l">Pendientes</div></div>
+      <div class="kpi"><div class="n" id="kEnv" style="color:var(--info)">–</div><div class="l">Enviadas</div></div>
+      <div class="kpi"><div class="n" id="kEnt" style="color:var(--ok)">–</div><div class="l">Entregadas</div></div>
+    </div>
+    <div class="filter" id="filter">
+      <div class="fbtn on" data-f="todos" onclick="setFilter('todos')">Todos</div>
+      <div class="fbtn" data-f="Pendiente" onclick="setFilter('Pendiente')">Pendientes</div>
+      <div class="fbtn" data-f="Enviada" onclick="setFilter('Enviada')">Enviadas</div>
+      <div class="fbtn" data-f="Entregada" onclick="setFilter('Entregada')">Entregadas</div>
+    </div>
+    <div id="enviosContent"></div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="openSheet()" style="display:none">+ Venta</button>
+
+<div class="sheet" id="sheet">
+  <div class="modal">
+    <h2>Registrar Venta<small>Se guarda directo en tu Google Sheet</small></h2>
+    <div class="fld"><label>Categoría</label>
+      <div class="pills" id="catPills">
+        <div class="pill" data-cat="Hombre">👔 Hombre</div>
+        <div class="pill" data-cat="Mujer">👚 Mujer</div>
+      </div></div>
+    <div class="fld"><label>Talla</label><div class="pills" id="sizePills"></div></div>
+    <div class="row2">
+      <div class="fld"><label>Cantidad</label><input id="units" type="number" value="1" min="1" inputmode="numeric"></div>
+      <div class="fld"><label>Precio £ c/u</label><input id="price" type="number" min="0" inputmode="decimal" placeholder="0"></div>
+    </div>
+    <div class="fld"><label>Cliente (nombre)</label><input id="cliente" placeholder="Nombre de quien compró"></div>
+    <div class="fld"><label>Dirección de envío</label><textarea id="direccion" rows="2" placeholder="Dirección completa"></textarea></div>
+    <div class="tot" id="modTot">Total: £0</div>
+    <div class="btns">
+      <button class="btn x" onclick="closeSheet()">Cancelar</button>
+      <button class="btn go" id="saveBtn" onclick="submitSale()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SIZES={Hombre:['M','L','XL','XXL'],Mujer:['S','M','L','XL']};
+let URL=localStorage.getItem('camUrl')||'';
+let stock=[],envios=[],sel={cat:'Hombre',size:'M'},view='stock',filter='todos';
+
+function toast(m,err){const t=document.getElementById('toast');t.textContent=m;t.className='toast show'+(err?' err':'');setTimeout(()=>t.className='toast',2200);}
+function saveUrl(){const v=document.getElementById('urlIn').value.trim();if(!v.includes('script.google'))return toast('URL inválida',1);URL=v;localStorage.setItem('camUrl',v);document.getElementById('setup').style.display='none';load();}
+
+async function load(){
+  if(!URL){document.getElementById('setup').style.display='block';return;}
+  try{
+    const r=await fetch(URL);const d=await r.json();
+    if(!d.ok)throw 0;
+    stock=d.stock; envios=d.envios||[];
+    document.getElementById('dot').classList.add('on');
+    document.getElementById('fab').style.display='flex';
+    document.getElementById('tabs').style.display='flex';
+    renderStock(); renderEnvios();
+  }catch(e){document.getElementById('dot').classList.remove('on');toast('No se pudo conectar',1);document.getElementById('setup').style.display='block';}
+}
+
+function setView(v){
+  view=v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
+  document.getElementById('viewStock').classList.toggle('hide',v!=='stock');
+  document.getElementById('viewEnvios').classList.toggle('hide',v!=='envios');
+}
+
+function renderStock(){
+  const left=stock.reduce((s,x)=>s+(+x.left||0),0);
+  const sold=stock.reduce((s,x)=>s+(+x.sold||0),0);
+  const rev=stock.reduce((s,x)=>s+((+x.sold||0)*(+x.price||0)),0);
+  document.getElementById('kLeft').textContent=left;
+  document.getElementById('kSold').textContent=sold;
+  document.getElementById('kRev').textContent='£'+rev.toLocaleString('en-GB');
+  let html='';
+  for(const cat of ['Hombre','Mujer']){
+    const items=stock.filter(x=>x.cat===cat);
+    const cls=cat==='Hombre'?'h':'m';
+    html+=`<div class="sec">${cat} <span class="tag ${cls}">${items.reduce((s,x)=>s+(+x.left||0),0)} disp.</span></div><div class="cards">`;
+    for(const x of items){
+      const pct=x.initial?Math.round(x.left/x.initial*100):0;
+      const alert=x.left<=3?'alert':'';
+      html+=`<div class="card ${cls} ${alert}"><div class="sz">${x.size}</div>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <div class="stat"><span>Quedan</span><b>${x.left}/${x.initial}</b></div>
+        <div class="stat"><span>Vendidas</span><b>${x.sold}</b></div></div>`;
+    }
+    html+='</div>';
+  }
+  document.getElementById('stockContent').innerHTML=html;
+}
+
+function setFilter(f){filter=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b.dataset.f===f));renderEnvios();}
+
+function renderEnvios(){
+  const p=envios.filter(e=>e.estado==='Pendiente').length;
+  const en=envios.filter(e=>e.estado==='Enviada').length;
+  const et=envios.filter(e=>e.estado==='Entregada').length;
+  document.getElementById('kPend').textContent=p;
+  document.getElementById('kEnv').textContent=en;
+  document.getElementById('kEnt').textContent=et;
+  let list=envios.slice().reverse();
+  if(filter!=='todos') list=list.filter(e=>e.estado===filter);
+  if(!list.length){document.getElementById('enviosContent').innerHTML='<div class="muted">No hay envíos aquí.</div>';return;}
+  const next={Pendiente:'Enviada',Enviada:'Entregada'};
+  let html='';
+  for(const e of list){
+    const est=e.estado||'Pendiente';
+    const nxt=next[est];
+    html+=`<div class="ship ${est}">
+      <div class="top">
+        <div><div class="cli">${e.cliente||'(sin nombre)'}</div>
+        <div class="meta">${e.cat} ${e.size} · ${e.units} ud · ${e.total||''} · ${e.fecha}</div></div>
+        <div class="badge ${est}">${est.toUpperCase()}</div>
+      </div>
+      ${e.direccion?`<div class="dir">📍 ${e.direccion}</div>`:''}
+      <div class="actions">
+        ${nxt?`<button class="sbtn act" onclick="cambiarEstado(${e.row},'${nxt}')">→ ${nxt}</button>`:'<button class="sbtn" disabled>✓ Completado</button>'}
+        ${est!=='Pendiente'?`<button class="sbtn" onclick="cambiarEstado(${e.row},'Pendiente')">↺ Pendiente</button>`:''}
+      </div>
+    </div>`;
+  }
+  document.getElementById('enviosContent').innerHTML=html;
+}
+
+async function cambiarEstado(row,estado){
+  const e=envios.find(x=>x.row===row); if(e)e.estado=estado;
+  renderEnvios();
+  try{ await fetch(URL,{method:'POST',body:JSON.stringify({action:'estado',row,estado})}); toast('✓ '+estado); }
+  catch(err){ toast('Error al actualizar',1); }
+}
+
+function openSheet(){document.getElementById('sheet').classList.add('show');pickCat('Hombre');}
+function closeSheet(){document.getElementById('sheet').classList.remove('show');}
+function pickCat(c){sel.cat=c;document.querySelectorAll('#catPills .pill').forEach(p=>p.classList.toggle('on',p.dataset.cat===c));
+  const sp=document.getElementById('sizePills');sp.innerHTML='';
+  SIZES[c].forEach((s,i)=>{const el=document.createElement('div');el.className='pill'+(i===0?' on':'');el.textContent=s;el.onclick=()=>pickSize(s,el);sp.appendChild(el);});
+  sel.size=SIZES[c][0];calc();}
+function pickSize(s,el){sel.size=s;document.querySelectorAll('#sizePills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+document.querySelectorAll('#catPills .pill').forEach(p=>p.onclick=()=>pickCat(p.dataset.cat));
+function calc(){const u=+document.getElementById('units').value||0,p=+document.getElementById('price').value||0;document.getElementById('modTot').textContent='Total: £'+(u*p).toLocaleString('en-GB');}
+document.getElementById('units').addEventListener('input',calc);
+document.getElementById('price').addEventListener('input',calc);
+
+async function submitSale(){
+  const u=+document.getElementById('units').value,p=+document.getElementById('price').value||0;
+  if(!u||u<1)return toast('¿Cantidad?',1);
+  const item=stock.find(x=>x.cat===sel.cat&&x.size===sel.size);
+  if(item&&u>item.left)return toast('No hay suficiente stock',1);
+  const cliente=document.getElementById('cliente').value.trim();
+  const direccion=document.getElementById('direccion').value.trim();
+  const btn=document.getElementById('saveBtn');btn.disabled=true;btn.textContent='Guardando…';
+  try{
+    await fetch(URL,{method:'POST',body:JSON.stringify({cat:sel.cat,size:sel.size,units:u,price:p,cliente,direccion})});
+    toast('✓ Venta registrada');closeSheet();
+    document.getElementById('price').value='';document.getElementById('units').value='1';
+    document.getElementById('cliente').value='';document.getElementById('direccion').value='';
+    setTimeout(load,900);
+  }catch(e){toast('Error al guardar',1);}
+  btn.disabled=false;btn.textContent='Guardar';
+}
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+load();
+</script>
+</body>
+</html>
